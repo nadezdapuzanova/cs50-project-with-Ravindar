@@ -1,0 +1,78 @@
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    session.clear()
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
+
+        # Validate input
+        if not username:
+            return apology("Username is required", 400)
+        elif not password:
+            return apology("Password is required", 400)
+        elif not confirmation:
+            return apology("Please confirm your password", 400)
+        elif password != confirmation:
+            return apology("Passwords do not match", 400)
+
+        # Check for duplicate username
+        existing_user = db.execute("SELECT * FROM users WHERE username = ?", username)
+        if len(existing_user) != 0:
+            return apology("Username already exists", 400)
+
+        # Insert user into database with hashed password
+        hash_pw = generate_password_hash(password)
+        try:
+            db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", username, hash_pw)
+        except Exception:
+            # Handle potential exceptions, e.g., if there's a unique constraint
+            return apology("Registration failed, please try again", 500)
+
+        # Retrieve new user id
+        user_row = db.execute("SELECT * FROM users WHERE username = ?", username)
+        session["user_id"] = user_row[0]["id"]
+
+        return redirect("/")
+    else:
+        return render_template("register.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """Register user"""
+    # clear
+    session.clear()
+
+    if request.method == "POST":
+        # creditentials
+        if not request.form.get("username"):
+            return apology("Username is required", 400)
+        elif not request.form.get("password"):
+            return apology("Password is required", 400)
+        elif not request.form.get("confirmation"):
+            return apology("Please confirm your password", 400)
+        elif request.form.get("password") != request.form.get("confirmation"):
+            return apology("Passwords do not match", 400)
+
+        # duplicates
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+        if len(rows) != 0:
+            return apology("Username already exists", 400)
+
+        # new users
+        db.execute("INSERT INTO users (username, hash) VALUES (?, ?)", request.form.get(
+            "username"), generate_password_hash(request.form.get("password")))
+
+        # search
+        rows = db.execute("SELECT * FROM users WHERE username = ?", request.form.get("username"))
+
+        # new session
+        session["user_id"] = rows[0]["id"]
+
+        # return
+        return redirect("/")
+    else:
+        return render_template("register.html")
