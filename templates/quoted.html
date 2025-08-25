@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}
+Quoted
+{% endblock %}
+{% block main %}
+<ol>
+    <li>name = {{ name }}</li>
+    <li>symbol = {{ symbol }}</li>
+    <li>price = {{ price | usd }}</li>
+</ol>
+
+{% endblock %}
+

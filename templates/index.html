@@ -1,40 +1,36 @@
 {% extends "layout.html" %}
-
 {% block title %}
-    Portfolio
+Portfolio
 {% endblock %}
-
 {% block main %}
-    <h2>Portfolio</h2>
+<h1 id="">welcome {{ username }}</h1>
+<table class="table table-bordered table-striped">
+    <thead class="thead-light">
+        <tr>
+            <th>SYMBOL</th>
+            <th>SHARES</th>
+            <th>PRICE</th>
+            <th>TOTAL</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key,stock in stocks.items() %}
+            <tr>
+                <td>{{ stock.symbol }}</td>
+                <td>{{ stock.shares }}</td>
+                <td>{{ stock.price | usd }}</td>
+                <td>{{ stock.value | usd }}</td>
 
-    <table class="table table-bordered table-striped">
-        <thead class="thead-light">
-            <tr>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th>Shares</th>
-                <th>Price</th>
-                <th>Total Value</th>
             </tr>
-        </thead>
-        <tbody>
-            {% for stock in stocks %}
-                <tr>
-                    <td>{{ stock.symbol }}</td>
-                    <td>{{ stock.name }}</td>
-                    <td>{{ stock.total_shares }}</td>
-                    <td>{{ stock.price | usd }}</td>
-                    <td>{{ stock.value | usd }}</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td colspan"4" align="right">Cash</td>
-                <td>{{ cash }}</td>
-            </tr>
-            <tr>
-                <td colspan"4" align="right">Total value</td>
-                <td>{{ total value }}</td>
-            </tr>
-        </tbody>
-    </table>
+        {% endfor %}
+        <tr>
+            <th colspan = "3" align="right">Cash</th>
+            <td>{{ cash | usd }}</td>
+        </tr>
+         <tr>
+            <th colspan = "3" align="right">Total Value</th>
+            <td>{{ total_value | usd }}</td>
+        </tr>
+    </tbody>
+</table>
 {% endblock %}
